@@ -1,0 +1,9 @@
+#
+# Linksys MX4300 (IPQ8174, 1 GB) — a single-board build.
+#
+# Concatenated onto devices/common/config by prepare-build.sh, followed by
+# personal.config (CONFIG_FRAGMENT in build.yml).
+#
+
+CONFIG_TARGET_qualcommax_ipq807x=y
+CONFIG_TARGET_qualcommax_ipq807x_DEVICE_linksys_mx4300=y
