@@ -6,18 +6,9 @@ name: Build
 # All build parameters live in the `env:` block below and in devices/<group>/config.
 # The vendor NSS stack (edma-nss releases) was last built from the
 # archive/edma-nss-final tag of this repo.
+# Personal fork: manual runs only (Actions -> Build -> Run workflow).
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - 'devices/**'
-      - '!devices/common-ppe/**'
-      - '!devices/ppe-*/**'
-      - 'scripts/**'
-      - '.github/workflows/build.yml'
-  schedule:
-    - cron: "0 */2 * * *"
 
 concurrency:
   group: build-${{ github.ref }}
@@ -43,6 +34,8 @@ env:
   FEEDS: |
     src-git nss https://github.com/JuliusBairaktaris/nss-packages.git;ppe-nss
     src-git luci https://github.com/JuliusBairaktaris/luci.git;luci-app-ppe-qos
+  # Personal package additions, appended last by prepare-build.sh.
+  CONFIG_FRAGMENT: personal.config
 
 jobs:
   check:
@@ -61,22 +54,6 @@ jobs:
       - uses: actions/checkout@v7
       - id: check
         run: bash scripts/check-updates.sh
-
-  stats:
-    name: Download stats
-    needs: check
-    runs-on: ubuntu-26.04
-    timeout-minutes: 5
-    permissions:
-      contents: write
-    env:
-      GH_TOKEN: ${{ github.token }}
-      REPO: ${{ github.repository }}
-    steps:
-      - uses: actions/checkout@v7
-      # Refreshes the README badge every run; the prune job also folds in
-      # deleted releases before removing them.
-      - run: bash scripts/download-stats.sh
 
   release:
     name: Create draft release
@@ -156,7 +133,7 @@ jobs:
         # One entry per devices/<name>/ directory. The memory-profile groups exist
         # because the ath11k memory profile is compile-time and image-wide, so
         # boards can only share a build when they share a profile.
-        device: [xiaomi_ax3600, ipq807x-1g, ipq807x-512m, ipq807x-256m, ipq60xx-1g, ipq60xx-512m]
+        device: [linksys_mx4300]
     env:
       GH_TOKEN: ${{ github.token }}
       DEVICE: ${{ matrix.device }}
