@@ -19,7 +19,10 @@ permissions:
 
 env:
   UPSTREAM_REPO: JuliusBairaktaris/openwrt-ppe-nss
-  UPSTREAM_REF: ppe-nss
+  # Pinned to the source of Julius's last good release: the ppe-nss rebases
+  # after it drop the tag_8021q patch that nss-wifi-drv needs. Set back to
+  # ppe-nss once that is fixed.
+  UPSTREAM_REF: 2a1df1304caf159aae7181bf0dfdfc0bd7d6f2e2
   NSS_REPO: JuliusBairaktaris/nss-packages
   NSS_REF: ppe-nss
   # The picker and the feeds move here once the PAGES_DEPLOY_KEY secret holds

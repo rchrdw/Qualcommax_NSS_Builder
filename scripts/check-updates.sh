@@ -43,6 +43,11 @@ command -v git >/dev/null || log::die "git is required"
 # Resolve a ref to a commit SHA via the remote.
 resolve_sha() {
   local repo="$1" ref="$2" sha
+  # ls-remote only matches ref names; a full SHA is already resolved.
+  if [[ "$ref" =~ ^[0-9a-f]{40}$ ]]; then
+    printf '%s\n' "$ref"
+    return
+  fi
   sha="$(git ls-remote "https://github.com/$repo" "$ref" | awk 'NR==1{print $1}')"
   [[ -n "$sha" ]] || log::die "could not resolve $repo@$ref"
   printf '%s\n' "$sha"
